@@ -9,7 +9,20 @@ from util import *
 # we will do XW + b. 
 # X be [Examples, Dimensions]
 def initialize_weights(in_size,out_size,params,name=''):
+    '''
+
+    这里要注意 W 是不是要resize
+    :param in_size:
+    :param out_size:
+    :param params:
+    :param name:
+    :return:
+    '''
     W, b = None, None
+    b = np.zeros(out_size)
+    W = np.random.uniform(-np.sqrt(6)/np.sqrt(in_size+out_size),
+                          np.sqrt(6)/np.sqrt(in_size+out_size), out_size*in_size)
+
     
     params['W' + name] = W
     params['b' + name] = b
@@ -18,7 +31,8 @@ def initialize_weights(in_size,out_size,params,name=''):
 # x is a matrix
 # a sigmoid activation function
 def sigmoid(x):
-    res = None
+    sig = lambda p: 1/(1+np.exp(-p))
+    res = sig(x)
     return res
 
 # Q 2.2.2
@@ -38,6 +52,8 @@ def forward(X,params,name='',activation=sigmoid):
     b = params['b' + name]
 
     # your code here
+    pre_act = X@W + b
+    post_act = sigmoid(pre_act)
     
 
     # store the pre-activation and post-activation values
@@ -50,7 +66,9 @@ def forward(X,params,name='',activation=sigmoid):
 # x is [examples,classes]
 # softmax should be done for each row
 def softmax(x):
-    res = None
+    max = np.max(x,axis=1)
+
+
     
     return res
 
