@@ -66,9 +66,19 @@ def forward(X,params,name='',activation=sigmoid):
 # x is [examples,classes]
 # softmax should be done for each row
 def softmax(x):
-    max = np.max(x,axis=1)
+    x = x.copy()
+    max = -np.max(x,axis=1)
+    expo = lambda p: np.exp(p)
+    expo_x = expo(x)
+    print(expo_x)
+    expo_max = expo(max).reshape((-1,1))
+    print(expo_max)
 
+    expo_final = expo_x*expo_max
+    print(expo_final)
 
+    sum = np.sum(expo_final, axis=1).reshape((-1,1))
+    res = expo_final/sum
     
     return res
 
@@ -77,8 +87,20 @@ def softmax(x):
 # y is size [examples,classes]
 # probs is size [examples,classes]
 def compute_loss_and_acc(y, probs):
-    loss, acc = None, None
-    
+    probs = probs.copy()
+    log = lambda p: np.log(p)
+    log_probs = log(probs)
+    cross = log*log_probs
+    loss = np.sum(cross)
+    n = y.shape[0]
+    index = 0
+    for i in range(n):
+        y_label = np.where(y[i,:] == np.max(y[i,:]))
+        probs_label = np.where(probs[i,:] == np.max(probs[i,:]))
+        if y_label == probs_label:
+            index += 1
+    acc = index/n
+
     return loss, acc 
 
 # we give this to you
@@ -106,7 +128,17 @@ def backwards(delta,params,name='',activation_deriv=sigmoid_deriv):
     # your code here
     # do the derivative through activation first
     # then compute the derivative W,b, and X
-    
+
+    delta_pre = delta * activation_deriv(post_act)
+    grad_W = X.transpose() @ delta_pre
+    grad_b = np.sum(delta_pre, axis=0, keepdims=True)
+    # X is also Dxin
+    grad_X = delta_pre @ W.transpose()
+
+    # store the gradients
+    params['grad_W' + name] = grad_W
+    params['grad_b' + name] = grad_b
+    return grad_X
 
     # store the gradients
     params['grad_W' + name] = grad_W
@@ -118,5 +150,7 @@ def backwards(delta,params,name='',activation_deriv=sigmoid_deriv):
 # return a list of [(batch1_x,batch1_y)...]
 def get_random_batches(x,y,batch_size):
     batches = []
-    
+    index = np.random.randint(0, x.shape[0], batch_size)
+    for i in index:
+        batches.append((x[i,:], y[i,:]))
     return batches
