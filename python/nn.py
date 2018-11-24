@@ -18,10 +18,9 @@ def initialize_weights(in_size,out_size,params,name=''):
     :param name:
     :return:
     '''
-    W, b = None, None
-    b = np.zeros(out_size)
+    b = np.zeros((1, out_size))
     W = np.random.uniform(-np.sqrt(6)/np.sqrt(in_size+out_size),
-                          np.sqrt(6)/np.sqrt(in_size+out_size), out_size*in_size)
+                          np.sqrt(6)/np.sqrt(in_size+out_size), out_size*in_size).reshape((in_size,out_size))
 
     
     params['W' + name] = W
@@ -53,8 +52,7 @@ def forward(X,params,name='',activation=sigmoid):
 
     # your code here
     pre_act = X@W + b
-    post_act = sigmoid(pre_act)
-    
+    post_act = activation(pre_act)
 
     # store the pre-activation and post-activation values
     # these will be important in backprop
@@ -70,12 +68,9 @@ def softmax(x):
     max = -np.max(x,axis=1)
     expo = lambda p: np.exp(p)
     expo_x = expo(x)
-    print(expo_x)
     expo_max = expo(max).reshape((-1,1))
-    print(expo_max)
 
     expo_final = expo_x*expo_max
-    print(expo_final)
 
     sum = np.sum(expo_final, axis=1).reshape((-1,1))
     res = expo_final/sum
@@ -90,8 +85,8 @@ def compute_loss_and_acc(y, probs):
     probs = probs.copy()
     log = lambda p: np.log(p)
     log_probs = log(probs)
-    cross = log*log_probs
-    loss = np.sum(cross)
+    cross = y*log_probs
+    loss = -np.sum(cross)
     n = y.shape[0]
     index = 0
     for i in range(n):
@@ -128,11 +123,10 @@ def backwards(delta,params,name='',activation_deriv=sigmoid_deriv):
     # your code here
     # do the derivative through activation first
     # then compute the derivative W,b, and X
-
     delta_pre = delta * activation_deriv(post_act)
     grad_W = X.transpose() @ delta_pre
     grad_b = np.sum(delta_pre, axis=0, keepdims=True)
-    # X is also Dxin
+    # X is also D x in
     grad_X = delta_pre @ W.transpose()
 
     # store the gradients
@@ -140,17 +134,19 @@ def backwards(delta,params,name='',activation_deriv=sigmoid_deriv):
     params['grad_b' + name] = grad_b
     return grad_X
 
-    # store the gradients
-    params['grad_W' + name] = grad_W
-    params['grad_b' + name] = grad_b
-    return grad_X
 
 # Q 2.4
 # split x and y into random batches
 # return a list of [(batch1_x,batch1_y)...]
 def get_random_batches(x,y,batch_size):
     batches = []
-    index = np.random.randint(0, x.shape[0], batch_size)
-    for i in index:
-        batches.append((x[i,:], y[i,:]))
+    N = x.shape[0]
+    rand_index = np.random.permutation(N)
+    num_batches = N//batch_size
+    for i in range(num_batches):
+        index = rand_index[i*batch_size:(i+1)*batch_size]
+        x_batch = x[index,:]
+        y_batch = y[index,:]
+        batches.append((x_batch,y_batch))
+
     return batches
