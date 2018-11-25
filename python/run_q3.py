@@ -72,28 +72,28 @@ for itr in range(max_iters):
     valid_acc_plot.append(valid_acc)
     print('Validation accuracy: ',valid_acc)
 
-# '''
-# Plot the loss and accuracy
-# '''
-# time_seq = np.arange(max_iters)
-# import matplotlib.pyplot as plt
-#
-# plt.figure(1)
-# ax = plt.gca()
-# ax.set_xlabel('epoch')
-# ax.set_ylabel('loss')
-# ax.plot(time_seq, acc_plot, color='r', linewidth=1, alpha=0.6, label = "acc_train")
-# ax.plot(time_seq, valid_acc_plot, color='b', linewidth=1, alpha=0.6, label = "acc_val")
-#
-#
-# plt.figure(2)
-# ax = plt.gca()
-# ax.set_xlabel('epoch')
-# ax.set_ylabel('loss')
-# ax.plot(time_seq, loss_plot, color='r', linewidth=1, alpha=0.6)
-# plt.pause(1500)
-# plt.close()
-#
+'''
+Plot the loss and accuracy
+'''
+time_seq = np.arange(max_iters)
+import matplotlib.pyplot as plt
+
+plt.figure(1)
+ax = plt.gca()
+ax.set_xlabel('epoch')
+ax.set_ylabel('loss')
+ax.plot(time_seq, acc_plot, color='r', linewidth=1, alpha=0.6, label = "acc_train")
+ax.plot(time_seq, valid_acc_plot, color='b', linewidth=1, alpha=0.6, label = "acc_val")
+
+
+plt.figure(2)
+ax = plt.gca()
+ax.set_xlabel('epoch')
+ax.set_ylabel('loss')
+ax.plot(time_seq, loss_plot, color='r', linewidth=1, alpha=0.6)
+plt.pause(1500)
+plt.close()
+
 #
 #
 #
