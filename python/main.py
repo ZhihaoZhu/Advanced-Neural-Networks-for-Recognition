@@ -3,10 +3,8 @@ import nn
 import q4
 from skimage import io
 
-image=io.imread('../images/01_list.jpg')
-# io.imshow(image)
-# io.show()
-# print(type(image))
+import pickle
+import string
 
-
-q4.findLetters(image)
+letters = np.array([_ for _ in string.ascii_uppercase[:26]] + [str(_) for _ in range(10)])
+print(letters)

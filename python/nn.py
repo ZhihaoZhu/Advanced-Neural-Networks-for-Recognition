@@ -89,10 +89,11 @@ def compute_loss_and_acc(y, probs):
     loss = -np.sum(cross)
     n = y.shape[0]
     index = 0
+    y_label = np.argmax(y, axis=1)
+    probs_label = np.argmax(probs, axis=1)
+
     for i in range(n):
-        y_label = np.where(y[i,:] == np.max(y[i,:]))
-        probs_label = np.where(probs[i,:] == np.max(probs[i,:]))
-        if y_label == probs_label:
+        if y_label[i] == probs_label[i]:
             index += 1
     acc = index/n
 

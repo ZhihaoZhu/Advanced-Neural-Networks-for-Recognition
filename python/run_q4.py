@@ -32,15 +32,29 @@ for img in os.listdir('../images'):
         plt.gca().add_patch(rect)
     plt.show()
     # find the rows using..RANSAC, counting, clustering, etc.
-    
+    '''
+        TODO
+    '''
+    # group_line = find_group(bboxes)
+
+
     # crop the bounding boxes
     # note.. before you flatten, transpose the image (that's how the dataset is!)
     # consider doing a square crop, and even using np.pad() to get your images looking more like the dataset
+    image_set = crop(bw, bboxes)
     
     # load the weights
     # run the crops through your neural network and print them out
+
     import pickle
     import string
     letters = np.array([_ for _ in string.ascii_uppercase[:26]] + [str(_) for _ in range(10)])
     params = pickle.load(open('q3_weights.pickle','rb'))
-    
+
+    h1 = forward(image_set, params, 'layer1')
+    probs = forward(h1, params, 'output', softmax)
+
+
+
+
+
