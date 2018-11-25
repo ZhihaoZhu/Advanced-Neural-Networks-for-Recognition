@@ -12,13 +12,28 @@ train_x = train_data['train_data']
 valid_x = valid_data['valid_data']
 
 dim = 32
-# do PCA
+
+# Normalize the train_x
+train_x_norm = train_x-(np.sum(train_x,axis=0)/train_x.shape[0])
+valid_x_norm = valid_x-(np.sum(valid_x,axis=0)/valid_x.shape[0])
+
+#Perform SVD & do PCA
+
+covaraince = train_x_norm.T @ train_x_norm
+U,S,Vt = np.linalg.svd(covaraince)
+
+#Calculate the projection matrix
+projection = U[:,:dim]
 
 # rebuild a low-rank version
-lrank = None
+lrank = train_x @ projection
+print(lrank.shape)
 
 # rebuild it
-recon = None
+
+recon = lrank @ projection.T
+print(recon.shape)
+
 
 for i in range(5):
     plt.subplot(2,1,1)
@@ -28,8 +43,12 @@ for i in range(5):
     plt.show()
 
 # build valid dataset
-recon_valid = None
+lrank_valid = valid_x @ projection
 
+# rebuild it
+recon_valid = lrank_valid @ projection.T
+
+# Calculate the PSNR
 total = []
 for pred,gt in zip(recon_valid,valid_x):
     total.append(psnr(gt,pred))

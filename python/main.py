@@ -3,8 +3,7 @@ import nn
 import q4
 from skimage import io
 
-import pickle
-import string
+x = np.array([[1,2],[5,4]])
+train_x_norm = x-(np.sum(x,axis=0)/x.shape[0])
+print(train_x_norm)
 
-letters = np.array([_ for _ in string.ascii_uppercase[:26]] + [str(_) for _ in range(10)])
-print(letters)
