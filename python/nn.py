@@ -21,10 +21,24 @@ def initialize_weights(in_size,out_size,params,name=''):
     b = np.zeros((1, out_size))
     W = np.random.uniform(-np.sqrt(6)/np.sqrt(in_size+out_size),
                           np.sqrt(6)/np.sqrt(in_size+out_size), out_size*in_size).reshape((in_size,out_size))
-
-    
     params['W' + name] = W
     params['b' + name] = b
+
+
+def initialize_Momentum_weights(in_size,out_size,M_params,name=''):
+    '''
+
+    这里要注意 W 是不是要resize
+    :param in_size:
+    :param out_size:
+    :param params:
+    :param name:
+    :return:
+    '''
+    b = np.zeros((1, out_size))
+    W = np.zeros((in_size,out_size))
+    M_params['W' + name] = W
+    M_params['b' + name] = b
 
 # Q 2.2.1
 # x is a matrix

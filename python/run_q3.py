@@ -12,69 +12,66 @@ valid_x, valid_y = valid_data['valid_data'], valid_data['valid_labels']
 test_x, test_y = test_data['test_data'], test_data['test_labels']
 
 
-# print(train_y.shape)
-#
-#
-# max_iters = 100
-# # pick a batch size, learning rate
-# batch_size = 16
-# learning_rate = 1e-3
-# hidden_size = 64
-#
-# batches = get_random_batches(train_x,train_y,batch_size)
-# batch_num = len(batches)
-#
-# params = {}
-#
-# # initialize layers here
-# initialize_weights(1024,hidden_size,params,'layer1')
-# initialize_weights(hidden_size,train_y.shape[1],params,'output')
-#
-#
-# loss_plot = []
-# acc_plot = []
-# valid_acc_plot = []
-# # with default settings, you should get loss < 150 and accuracy > 80%
-# for itr in range(max_iters):
-#     total_loss = 0
-#     total_acc = 0
-#     for xb,yb in batches:
-#         # forward
-#         h1 = forward(xb, params, 'layer1')
-#         probs = forward(h1, params, 'output', softmax)
-#
-#         # loss
-#         # be sure to add loss and accuracy to epoch totals
-#         loss, acc = compute_loss_and_acc(yb, probs)
-#         total_loss += loss
-#         total_acc += acc
-#
-#         # backward
-#         delta1 = probs
-#         delta1 = delta1 - yb
-#         delta2 = backwards(delta1, params, 'output', linear_deriv)
-#         backwards(delta2, params, 'layer1', sigmoid_deriv)
-#
-#         # apply gradient
-#         for k, v in params.items():
-#             if 'grad' in k:
-#                 name = k.split('_')[1]
-#                 params[name] -= learning_rate * v
-#
-#     loss_plot.append(total_loss)
-#     total_acc /= len(batches)
-#     acc_plot.append(total_acc)
-#
-#     if itr % 2 == 0:
-#         print("itr: {:02d} \t loss: {:.2f} \t acc : {:.2f}".format(itr,total_loss,total_acc))
-#     # run on validation set and report accuracy! should be above 75%
-#     h1 = forward(valid_x, params, 'layer1')
-#     probs = forward(h1, params, 'output', softmax)
-#     loss, acc = compute_loss_and_acc(valid_y, probs)
-#     valid_acc = acc
-#     valid_acc_plot.append(valid_acc)
-#     print('Validation accuracy: ',valid_acc)
-#
+max_iters = 100
+# pick a batch size, learning rate
+batch_size = 16
+learning_rate = 1e-3
+hidden_size = 64
+
+batches = get_random_batches(train_x,train_y,batch_size)
+batch_num = len(batches)
+
+params = {}
+
+# initialize layers here
+initialize_weights(1024,hidden_size,params,'layer1')
+initialize_weights(hidden_size,train_y.shape[1],params,'output')
+
+
+loss_plot = []
+acc_plot = []
+valid_acc_plot = []
+# with default settings, you should get loss < 150 and accuracy > 80%
+for itr in range(max_iters):
+    total_loss = 0
+    total_acc = 0
+    for xb,yb in batches:
+        # forward
+        h1 = forward(xb, params, 'layer1')
+        probs = forward(h1, params, 'output', softmax)
+
+        # loss
+        # be sure to add loss and accuracy to epoch totals
+        loss, acc = compute_loss_and_acc(yb, probs)
+        total_loss += loss
+        total_acc += acc
+
+        # backward
+        delta1 = probs
+        delta1 = delta1 - yb
+        delta2 = backwards(delta1, params, 'output', linear_deriv)
+        backwards(delta2, params, 'layer1', sigmoid_deriv)
+
+        # apply gradient
+        for k, v in params.items():
+            if 'grad' in k:
+                name = k.split('_')[1]
+                params[name] -= learning_rate * v
+
+    loss_plot.append(total_loss)
+    total_acc /= len(batches)
+    acc_plot.append(total_acc)
+
+    if itr % 2 == 0:
+        print("itr: {:02d} \t loss: {:.2f} \t acc : {:.2f}".format(itr,total_loss,total_acc))
+    # run on validation set and report accuracy! should be above 75%
+    h1 = forward(valid_x, params, 'layer1')
+    probs = forward(h1, params, 'output', softmax)
+    loss, acc = compute_loss_and_acc(valid_y, probs)
+    valid_acc = acc
+    valid_acc_plot.append(valid_acc)
+    print('Validation accuracy: ',valid_acc)
+
 # '''
 # Plot the loss and accuracy
 # '''
