@@ -6,6 +6,7 @@ import skimage.restoration
 import skimage.filters
 import skimage.morphology
 import skimage.segmentation
+np.set_printoptions(threshold=np.inf)
 
 
 # takes a color image
@@ -16,9 +17,11 @@ def findLetters(image):
     thresh = skimage.filters.threshold_otsu(gray_img)
     bw = skimage.morphology.closing(gray_img > thresh, skimage.morphology.square(3))
     bw_copy = bw.copy()
+    erosion_selem = np.ones((15, 15), dtype=np.bool)
+    bw_copy = skimage.morphology.binary_erosion(bw_copy, selem=erosion_selem)
     erosion_selem = np.ones((9, 9), dtype=np.bool)
     processed = skimage.morphology.binary_erosion(bw, selem=erosion_selem)
-    thresh_adapt_img = 1 - processed
+    thresh_adapt_img = 1 - processed.astype(np.uint8)
     label_image, region_num = skimage.measure.label(thresh_adapt_img, connectivity=2, background=0, return_num=True)
     for region in skimage.measure.regionprops(label_image):
         if region.area >= 300:
@@ -46,7 +49,6 @@ def crop(bw, bboxes):
     for i in range(bboxes.shape[0]):
         cord = bboxes[i,:]
         image = bw[cord[0]:cord[2], cord[1]:cord[3]]*1
-        print(image)
 
         width, height = image.shape
         diff = abs(width - height) // 2
@@ -54,14 +56,20 @@ def crop(bw, bboxes):
             padded_img = np.pad(image, ((diff, diff), (0, 0)), 'constant', constant_values=(1))
         else:
             padded_img = np.pad(image, ((0, 0), (diff, diff)), 'constant', constant_values=(1))
-        crop = skimage.transform.resize(padded_img, (32, 32))
+
+        cropped = skimage.transform.resize(padded_img.astype(np.float64), (32, 32))
+
         # import matplotlib.pyplot as plt
-        # plt.imshow(crop)
+        # plt.imshow(cropped)
         # plt.show()
+        # print(cropped)
+        # print(np.max(cropped))
         # break
-        flat = crop.transpose().reshape((1, -1))
+
+        flat = cropped.transpose().reshape((-1))
+
         images.append(flat)
-    images = np.array(image)
+    images = np.array(images)
 
     return images
 

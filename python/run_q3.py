@@ -153,6 +153,8 @@ with open('q3_weights.pickle', 'rb') as handle:
     saved_params = pickle.load(handle)
 confusion_matrix = np.zeros((train_y.shape[1],train_y.shape[1]))
 
+
+
 h1 = forward(test_x, saved_params, 'layer1')
 probs = forward(h1, saved_params, 'output', softmax)
 

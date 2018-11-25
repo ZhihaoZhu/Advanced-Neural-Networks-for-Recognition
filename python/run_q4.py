@@ -11,6 +11,8 @@ import skimage.io
 import skimage.filters
 import skimage.morphology
 import skimage.segmentation
+# np.set_printoptions(threshold=np.inf)
+
 
 from nn import *
 from q4 import *
@@ -42,7 +44,7 @@ for img in os.listdir('../images'):
     # note.. before you flatten, transpose the image (that's how the dataset is!)
     # consider doing a square crop, and even using np.pad() to get your images looking more like the dataset
     image_set = crop(bw, bboxes)
-    
+
     # load the weights
     # run the crops through your neural network and print them out
 
@@ -51,8 +53,27 @@ for img in os.listdir('../images'):
     letters = np.array([_ for _ in string.ascii_uppercase[:26]] + [str(_) for _ in range(10)])
     params = pickle.load(open('q3_weights.pickle','rb'))
 
+    print(image_set.shape)
+    # print(image_set[0].reshape((32,32)))
+
+
     h1 = forward(image_set, params, 'layer1')
     probs = forward(h1, params, 'output', softmax)
+    print(probs.shape)
+
+    probs_label = np.argmax(probs, axis=1)
+    print(probs_label.shape)
+    print(probs_label)
+
+    for i in range(5):
+        index = i
+        image_test = image_set[index, :].reshape((32, 32))
+        plt.imshow(image_test.T)
+        plt.show()
+        print(letters[probs_label[index]])
+
+
+
 
 
 
